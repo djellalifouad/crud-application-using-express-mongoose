@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <form action="/users/add" method="POST">
+      <input type="text" name="username" placeholder="username"  />
+      <input type="password" name="password" placeholder="password"  >
+      <input type="submit" value="submit">
+          
+    </form>
+      <% for(var i = 0; i < data.length; i++) {%>
+            <ul>
+       <li>username : <%= data[i].username %></li>
+         <li> password : <%= data[i].password %></li>
+       </ul>
+    <% } %>
+ 
+
+  </body>
+</html>
