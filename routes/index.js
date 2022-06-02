@@ -5,6 +5,7 @@ const { route } = require('./users');
 
 const Enseignant = db.Enseignant;
 const Cour = db.Cour;
+const Enseigne = db.Enseigne;
  // ajouter un cour 
 router.post('/cour', (req,res)=> {
   console.log(Cour)
@@ -47,7 +48,7 @@ Cour.findByIdAndUpdate(
 })
 })
 router.get('/enseignant/:nom',(req,res)=> {
-  Enseignant.find({nom: req.params.nom}).populate({path: "cours"}).then(e=>res.json(e));
+  Enseignant.find({nom: req.params.nom}).populate({path: "cours",select : 'titre'}).then(e=>res.json(e));
 })
 router.get('/enseignants',(req,res)=> {
   Enseignant.find().populate("cours").then(e=>res.json(e));
@@ -90,6 +91,54 @@ router.get('/enseignant2/:nom',(req,res)=> {
   }
 },
 { "$project": { "liste de cour": { "titre": 1 },"nom" : 1,"prenom": 1 }}
+]
+).exec(function( err,l) {
+  res.json(l)
+})
+})
+
+router.post('/enseigne',(req,res)=> {
+  const enseigne  = new Enseigne({
+    ensignant:req.body.ensignant, 
+    cour: req.body.cour, 
+    date : req.body.date
+  })
+  enseigne.save().then(e=>res.json(e))
+})
+router.get('/enseigne',(req,res)=> {
+   Enseigne.find().then((enseigne)=> res.json(enseigne))
+})
+router.get('/enseignelook',(req,res)=> {
+
+ Enseigne.aggregate([{
+    $lookup: {
+      from :"cours", 
+      localField: "cour",
+      foreignField: "_id",
+      as : "courdetail"
+    },
+  },
+  
+  {
+    $lookup: {
+      from :"enseignants", 
+      localField: "enseignant",
+      foreignField: "_id",
+      as : "detaile"
+    }
+  },
+  {
+    $match: {
+     date: req.body.date,
+"enseignant.nom" : req.body.nom,
+     
+     
+    }, 
+
+      
+
+  },
+  
 ]
 ).exec(function( err,l) {
   res.json(l)
