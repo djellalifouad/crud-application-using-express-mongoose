@@ -7,5 +7,4 @@ db.url = "mongodb+srv://djellali:12345678esi@cluster0.rrjvt.mongodb.net/myFirstD
 db.Cour = require("./model.cours")(mongoose);
 db.Enseignant = require('./model.enseignant.js')(mongoose) 
 db.Enseigne = require('./model.enseigne')(mongoose) 
-
 module.exports = db;

@@ -110,39 +110,43 @@ router.get('/enseigne',(req,res)=> {
 })
 router.get('/enseignelook',(req,res)=> {
 
- Enseigne.aggregate([{
-    $lookup: {
-      from :"cours", 
-      localField: "cour",
-      foreignField: "_id",
-      as : "courdetail"
-    },
-  },
-  
-  {
-    $lookup: {
-      from :"enseignants", 
-      localField: "enseignant",
-      foreignField: "_id",
-      as : "detaile"
-    }
-  },
-  {
-    $match: {
-     date: req.body.date,
-"enseignant.nom" : req.body.nom,
-     
-     
-    }, 
-
-      
-
-  },
-  
-]
-).exec(function( err,l) {
-  res.json(l)
-})
+ Enseigne.aggregate([
+   {
+     $lookup: {
+       from: "cours",
+       localField: "cour",
+       foreignField: "_id",
+       as: "courdetail",
+     },
+   },
+   {
+     $lookup: {
+       from: "enseignants",
+       localField: "ensignant",
+       foreignField: "_id",
+       as: "detaileEnsignant",
+     },
+   },
+   {
+     $match: {
+       date: req.body.date,
+     },
+   },
+   {
+     $match: {
+       "detaileEnsignant.nom": req.body.nom,
+     },
+   },
+   {
+     $project: {
+       _id: 1,
+       "detaileEnsignant.nom" :1,
+       "date" : 1,
+     },
+   },
+ ]).exec(function (err, l) {
+   res.json(l);
+ });
 })
 
  
